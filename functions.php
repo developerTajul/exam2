@@ -62,6 +62,30 @@ function secondexam_setup() {
 		'default-color' => 'ffffff',
 		'default-image' => '',
 	) ) );
+
+
+	register_post_type('services', array(
+		'label'		=> 'Services',
+		'labels'	=> array(
+			'name'	=> 'Services',
+			'add_new'	=> 'Add New Service',
+			'add_new_item'	=> 'Add New Service'
+			),
+		'public'	=> true,
+		'suppors'	=> array('title', 'editor', 'thumbnail')
+	));
+
+	register_taxonomy('service_cat', 'services', array(
+		'label'		=> 'Types',
+		'labels'	=> array(
+				'name'	=> 'Types',
+				'add_new'	=> 'Add New Type',
+				'add_new_item' => 'Add New Type'
+			),
+		'public'	=> true,
+		'hierarchical'	=> true
+	));
+
 }
 endif;
 add_action( 'after_setup_theme', 'secondexam_setup' );
@@ -100,7 +124,14 @@ add_action( 'widgets_init', 'secondexam_widgets_init' );
  * Enqueue scripts and styles.
  */
 function secondexam_scripts() {
+	wp_enqueue_style('exam-bootstrap', get_template_directory_uri().'/css/bootstrap.min.css', array(), '1.0.1', 'all');
+	wp_enqueue_style('exam-font-awesome', get_template_directory_uri().'/css/font-awesome.min.css', array(), '1.0.2', 'all');
+
 	wp_enqueue_style( 'secondexam-style', get_stylesheet_uri() );
+
+
+
+	wp_enqueue_script( 'secondexam-navigation', get_template_directory_uri() . '/js/bootstrap.min.js', array(), '2.0.1', true );
 
 	wp_enqueue_script( 'secondexam-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
 
@@ -143,8 +174,54 @@ require get_template_directory() . '/inc/jetpack.php';
 /**
  * Get the bootstrap!
  */
-if ( file_exists(  __DIR__ . 'libs/cmb2/init.php' ) ) {
-  require_once  __DIR__ . 'libs/cmb2/init.php';
-} elseif ( file_exists(  __DIR__ . 'libs/CMB2/init.php' ) ) {
-  require_once  __DIR__ . 'libs/CMB2/init.php';
+if ( file_exists(  __DIR__ . '/libs/cmb2/init.php' ) ) {
+  require_once  __DIR__ . '/libs/cmb2/init.php';
+} elseif ( file_exists(  __DIR__ . '/libs/CMB2/init.php' ) ) {
+  require_once  __DIR__ . '/libs/CMB2/init.php';
 }
+
+
+
+
+add_action( 'cmb2_admin_init', 'cmb2_sample_metaboxes' );
+/**
+ * Define the metabox and field configurations.
+ */
+function cmb2_sample_metaboxes() {
+
+    
+
+    /**
+     * Initiate the metabox
+     */
+    $cmb = new_cmb2_box( array(
+        'id'            => 'test_metabox',
+        'title'         => __( 'Test Metabox', 'cmb2' ),
+        'object_types'  => array( 'page', 'services'), // Post type
+        'context'       => 'normal',
+        'priority'      => 'high',
+        'show_names'    => true, // Show field names on the left
+        // 'cmb_styles' => false, // false to disable the CMB stylesheet
+        // 'closed'     => true, // Keep the metabox closed by default
+    ) );
+
+    // Regular text field
+    $cmb->add_field( array(
+        'name'       => __( 'Icon Name', 'cmb2' ),
+        'desc'       => __( 'field description (optional)', 'cmb2' ),
+        'id'         => 'icon_service',
+        'type'       => 'text',
+        'show_on_cb' => 'cmb2_hide_if_no_cats', // function should return a bool value
+        // 'sanitization_cb' => 'my_custom_sanitization', // custom sanitization callback parameter
+        // 'escape_cb'       => 'my_custom_escaping',  // custom escaping callback parameter
+        // 'on_front'        => false, // Optionally designate a field to wp-admin only
+        // 'repeatable'      => true,
+    ) );
+
+
+
+    // Add other metaboxes as needed
+
+}
+
+
