@@ -136,3 +136,15 @@ require get_template_directory() . '/inc/customizer.php';
  * Load Jetpack compatibility file.
  */
 require get_template_directory() . '/inc/jetpack.php';
+
+
+
+
+/**
+ * Get the bootstrap!
+ */
+if ( file_exists(  __DIR__ . 'libs/cmb2/init.php' ) ) {
+  require_once  __DIR__ . 'libs/cmb2/init.php';
+} elseif ( file_exists(  __DIR__ . 'libs/CMB2/init.php' ) ) {
+  require_once  __DIR__ . 'libs/CMB2/init.php';
+}
